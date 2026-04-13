@@ -1,0 +1,48 @@
+
+[base]
+type = ml-easy-job
+
+[resource]
+usergroup = hadoop-mtai
+queue = root.zw05_training_cluster.hadoop-llm.pool
+
+[roles]
+workers = 1
+worker.memory = 400000
+worker.vcore = 48
+worker.gcores80g = 2
+worker.script = export PATH=/mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/miniconda3/envs/verl-agent/bin:$PATH && export LD_LIBRARY_PATH=/mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/miniconda3/envs/verl-agent/lib/python3.12/site-packages/torch/lib:/usr/local/cuda-12.4/targets/x86_64-linux/lib:$LD_LIBRARY_PATH && export PYTHONPATH=/mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/verl-agent:$PYTHONPATH && cd /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/verl-agent && export HYDRA_FULL_ERROR=1 && ulimit -n 65535 && export VLLM_ATTENTION_BACKEND=XFORMERS && export RAY_memory_monitor_refresh_ms=0 && export RAY_memory_usage_threshold=1.0 && export RAY_DISABLE_MEMORY_MONITOR=1 && python3 -m verl.trainer.main_ppo     algorithm.adv_estimator=gigpo     data.train_files=/mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/data/verl-agent/text/train.parquet     data.val_files=/mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/data/verl-agent/text/test.parquet     data.train_batch_size=16     data.val_batch_size=128     data.max_prompt_length=2048     data.max_response_length=512     data.filter_overlong_prompts=True     data.truncation='error'     data.return_raw_chat=True     actor_rollout_ref.model.path=/mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/VLLM/Qwen/Qwen2.5-1.5B-Instruct     actor_rollout_ref.actor.optim.lr=1e-6     actor_rollout_ref.model.use_remove_padding=True     actor_rollout_ref.actor.ppo_mini_batch_size=256     actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=32     actor_rollout_ref.actor.use_kl_loss=True     actor_rollout_ref.actor.kl_loss_coef=0.01     actor_rollout_ref.actor.kl_loss_type=low_var_kl     actor_rollout_ref.model.enable_gradient_checkpointing=True     actor_rollout_ref.actor.fsdp_config.param_offload=False     actor_rollout_ref.actor.fsdp_config.optimizer_offload=False     actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=32     actor_rollout_ref.rollout.tensor_model_parallel_size=2     actor_rollout_ref.rollout.name=vllm     actor_rollout_ref.rollout.gpu_memory_utilization=0.6     actor_rollout_ref.rollout.enable_chunked_prefill=False     actor_rollout_ref.rollout.enforce_eager=False     actor_rollout_ref.rollout.free_cache_engine=False     actor_rollout_ref.rollout.val_kwargs.temperature=0.4     actor_rollout_ref.rollout.val_kwargs.do_sample=True     actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=32     actor_rollout_ref.ref.fsdp_config.param_offload=True     actor_rollout_ref.actor.use_invalid_action_penalty=True     actor_rollout_ref.actor.invalid_action_penalty_coef=0.1     algorithm.use_kl_in_reward=False     algorithm.gamma=0.95     algorithm.gigpo.step_advantage_w=1.0     algorithm.gigpo.mode=mean_std_norm     env.env_name=alfworld/AlfredTWEnv     env.seed=0     env.max_steps=50     env.rollout.n=8     trainer.critic_warmup=0     trainer.logger='["console"]'     trainer.project_name='verl_agent_alfworld'     trainer.experiment_name='gigpo_qwen2.5_1.5b'     trainer.n_gpus_per_node=2     trainer.nnodes=1     trainer.save_freq=-1     trainer.test_freq=5     trainer.total_epochs=150     trainer.val_before_train=True     ray_init.num_cpus=32
+
+[user_args]
+
+[am]
+afo.app.am.resource.mb = 4096
+
+[tensorboard]
+with.tensor.board = false
+
+[docker]
+afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.data.hadoop.gpu/mtai/training_cuda12.4_cudnn9.8_glibc2.31_c77b974a:v1.0.0
+
+[data]
+afo.data.prefetch = false
+
+[failover]
+afo.app.support.engine.failover = true
+afo.role.worker.not.nccl_not_ready = true
+
+[conda]
+
+[config]
+
+[others]
+afo.app.env.YARN_CONTAINER_RUNTIME_DOCKER_SHM_SIZE_BYTES = 214748364800
+afo.role.worker.env.LAMP_PYTORCH_COMMUNICATION_TIMEOUT = 36000
+afo.role.worker.env.NCCL_SOCKET_IFNAME = ^lo,docker0
+afo.role.worker.env.NCCL_IB_DISABLE = 0
+afo.role.worker.env.NCCL_NET_GDR_LEVEL = 2
+afo.network.mode = RDMA
+afo.app.env.YARN_CONTAINER_RUNTIME_DOCKER_ULIMITS = memlock=-1
+afo.xm.notice.receivers.account = chentianyu18
+with_requirements = false
+afo.role.worker.task.attempt.max.retry = 1

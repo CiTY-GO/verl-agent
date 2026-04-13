@@ -1,0 +1,48 @@
+
+[base]
+type = ml-easy-job
+
+[resource]
+usergroup = hadoop-mtai
+queue = root.zw05_training_cluster.hadoop-llm.pool
+
+[roles]
+workers = 1
+worker.memory = 400000
+worker.vcore = 48
+worker.gcores80g = 2
+worker.script = cd /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/verl-agent && bash run_alfworld_hope.sh vllm 2
+
+[user_args]
+
+[am]
+afo.app.am.resource.mb = 4096
+
+[tensorboard]
+with.tensor.board = false
+
+[docker]
+afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.data.hadoop.gpu/mtai/training_cuda12.6_conda_python3.12_torch2.8_vllm0.11_verl0.6_fa3_mtai_fd0a5390:v1.0.0
+
+[data]
+afo.data.prefetch = false
+
+[failover]
+afo.app.support.engine.failover = true
+afo.role.worker.not.nccl_not_ready = true
+
+[conda]
+
+[config]
+
+[others]
+afo.app.env.YARN_CONTAINER_RUNTIME_DOCKER_SHM_SIZE_BYTES = 214748364800
+afo.role.worker.env.LAMP_PYTORCH_COMMUNICATION_TIMEOUT = 36000
+afo.role.worker.env.NCCL_SOCKET_IFNAME = ^lo,docker0
+afo.role.worker.env.NCCL_IB_DISABLE = 0
+afo.role.worker.env.NCCL_NET_GDR_LEVEL = 2
+afo.network.mode = RDMA
+afo.app.env.YARN_CONTAINER_RUNTIME_DOCKER_ULIMITS = memlock=-1
+afo.xm.notice.receivers.account = chentianyu18
+with_requirements = false
+afo.role.worker.task.attempt.max.retry = 1

@@ -1,0 +1,52 @@
+[base]
+type = ml-easy-job
+
+[resource]
+usergroup = hadoop-mtai
+queue = root.zw05_training_cluster.hadoop-llm.pool
+
+[roles]
+workers = 1
+worker.memory = 237000
+worker.vcore = 176
+worker.gcores80g = 2
+worker.script = cd /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/verl-agent && bash run_alfworld_hope.sh vllm
+
+[user_args]
+
+[am]
+afo.app.am.resource.mb = 4096
+
+[tensorboard]
+with.tensor.board = true
+board.log_dir = /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/data/verl-agent/tensorboard
+
+[docker]
+# afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.data.hadoop.gpu/ai-search/training_codelab_verl0.4-sglang0.4.6.post5-vllm0.8.5-mcore0.13.0-preview_3f97798e:v1.0.0
+afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.data.hadoop.gpu/ai-search/training_codelab_verl0.4-sglang0.4.6.post5-vllm0.8.5-mcore0.13.0-preview_3f97798e:v1.0.0
+# afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.data.hadoop.gpu/ai-search/training_codelab_verl0.4-sglang0.4.6.post5-vllm0.8.5-mcore0.13.0-preview_3f97798e:v1.0.0
+# afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.data.hadoop.gpu/ai-search/training_codelab_verl0.4-sglang0.4.6.post5-vllm0.8.5-mcore0.13.0-preview_3f97798e:v1.0.0
+[data]
+afo.data.prefetch = false
+
+[failover]
+afo.app.support.engine.failover = true
+
+[conda]
+
+[config]
+
+[others]
+afo.role.worker.not.node_name=zw04-data-k8s-gpu-a100-node1046.mt,zw04-data-k8s-gpu-a100-node1030.mt,zw04-data-k8s-gpu-a100-node1023.mt,zw04-data-k8s-gpu-a100-node1071.mt
+afo.app.env.YARN_CONTAINER_RUNTIME_DOCKER_SHM_SIZE_BYTES = 107374182400
+afo.xm.notice.receivers.account = chentianyu18
+with_requirements = false
+afo.role.worker.task.attempt.max.retry = 1
+afo.role.worker.env.LAMP_PYTORCH_COMMUNICATION_TIMEOUT = 36000
+afo.role.worker.env.NCCL_SOCKET_IFNAME = ^lo,docker0
+afo.role.worker.env.NCCL_IB_DISABLE = 0
+afo.role.worker.env.NCCL_NET_GDR_LEVEL = 2
+afo.role.worker.env.NCCL_IB_MERGE_NICS = 0
+afo.role.worker.env.NCCL_P2P_DISABLE = 0
+afo.network.mode = RDMA
+

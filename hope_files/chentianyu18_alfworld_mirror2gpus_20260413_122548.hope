@@ -1,0 +1,52 @@
+[base]
+type = ml-easy-job
+
+[resource]
+usergroup = hadoop-mtai
+queue = root.zw05_training_cluster.hadoop-llm.pool
+
+[roles]
+workers = 1
+worker.memory = 150000
+worker.vcore = 88
+worker.gcores80g = 2
+worker.script = export RAY_memory_monitor_refresh_ms=0 && export RAY_memory_usage_threshold=1.0 && export RAY_DISABLE_MEMORY_MONITOR=1 && export RAY_DISABLE_DASHBOARD=1 && export OPENBLAS_NUM_THREADS=1 && export OMP_NUM_THREADS=1 && cd /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/verl-agent && bash run_alfworld_hope.sh vllm 2
+
+[user_args]
+
+[am]
+afo.app.am.resource.mb = 4096
+
+[tensorboard]
+with.tensor.board = true
+board.log_dir = /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtai/users/chentianyu18/research/data/verl-agent/tensorboard
+
+[docker]
+# afo.docker.image.name = registryonline-hulk.sankuai.com/custom_prod/com.sankuai.phxmlp.mtjupyter.singleuser/hdp_base_pytorch2.3.1_cuda12.4.0_python3.9_fa2.5.8_ncclmt2.20.5_ompi4_gcc11_ofed5.8_0654e424
+afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.data.hadoop.gpu/mtai/training_cuda12.6_conda_python3.12_torch2.8_vllm0.11_verl0.6_fa3_mtai_fd0a5390:v1.0.0
+# afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.phxmlp.mtjupyter.singleuser/mtai-llms_training_codelab_verl_cuda12.4.1_python3.10_torch2.6_vllm0.8.5_megatron_1.0.0_b37e8f9d
+# afo.docker.image.name = registry-offlinebiz.sankuai.com/custom_prod/com.sankuai.data.hadoop.gpu/mtai/base_pytorch2.5.0_cuda12.4.0_python3.9_h20_rlhf_verl_4920d0cd:v1.0.0
+[data]
+afo.data.prefetch = false
+
+[failover]
+afo.app.support.engine.failover = true
+
+[conda]
+
+[config]
+
+[others]
+afo.role.worker.not.node_name=zw04-data-k8s-gpu-a100-node1046.mt,zw04-data-k8s-gpu-a100-node1030.mt,zw04-data-k8s-gpu-a100-node1023.mt,zw04-data-k8s-gpu-a100-node1071.mt
+afo.app.env.YARN_CONTAINER_RUNTIME_DOCKER_SHM_SIZE_BYTES = 107374182400
+afo.xm.notice.receivers.account = chentianyu18
+with_requirements = false
+afo.role.worker.task.attempt.max.retry = 1
+afo.role.worker.env.LAMP_PYTORCH_COMMUNICATION_TIMEOUT = 36000
+afo.role.worker.env.NCCL_SOCKET_IFNAME = ^lo,docker0
+afo.role.worker.env.NCCL_IB_DISABLE = 0
+afo.role.worker.env.NCCL_NET_GDR_LEVEL = 2
+afo.role.worker.env.NCCL_IB_MERGE_NICS = 0
+afo.role.worker.env.NCCL_P2P_DISABLE = 0
+afo.network.mode = RDMA
+
