@@ -46,7 +46,7 @@ email-validator==2.3.0
 Farama-Notifications==0.0.4
 fast_downward_textworld==20.6.3
 fastapi==0.115.14
-fastapi-cli==0.0.7
+fastapi-cli==0.0.22
 fastrlock==0.8.3
 filelock==3.25.2
 fonttools==4.62.1
